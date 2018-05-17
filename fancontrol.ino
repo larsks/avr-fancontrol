@@ -27,6 +27,7 @@ volatile int tach1_valid = 0,
 
 
 void setupInterrupts() {
+    // Enable pin-change interrupts for the fan tach signal inputs
     cli();
     GIMSK |= bit(PCIE);
     PCMSK |= bit(digitalPinToPCMSKbit(PIN_TACH1));
