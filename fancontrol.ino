@@ -69,6 +69,10 @@ void setupPins() {
     pinMode(PIN_TACH2, INPUT_PULLUP);
     pinMode(PIN_LED, OUTPUT);
     pinMode(PIN_RELAY, OUTPUT);
+
+    // Ensure the lamp is initially off. Note that the relay board
+    // is active-low.
+    digitalWrite(PIN_RELAY, 1);
 }
 
 /**
@@ -109,12 +113,14 @@ void setup() {
  * Turn off the heating lamp.
  */
 void turnLampOff() {
+     digitalWrite(PIN_RELAY, 1);
 }
 
 /**
  * Turn on the heating lamp.
  */
 void turnLampOn() {
+     digitalWrite(PIN_RELAY, 0);
 }
 
 /**
