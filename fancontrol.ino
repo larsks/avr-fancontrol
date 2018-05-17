@@ -167,7 +167,9 @@ void loop() {
 /**
  * Calculate the time between two pulses.
  */
-void calc_interval (int *this_interval, int *last_interval, int *valid) {
+void calc_interval (volatile int *this_interval,
+        volatile int *last_interval,
+        volatile int *valid) {
     int now = micros();
 
     *this_interval = now - *last_interval;
