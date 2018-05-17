@@ -110,24 +110,14 @@ void loop() {
     delay(1000);
 }
 
-void isr_tach1 () {
+void calc_interval (int *this_interval, int *last_interval, int *valid) {
     int now = micros();
 
-    tach1_duration = now - last_tach1_time;
-    if (tach1_duration > 0) {
-        tach1_valid = 1;
+    *this_interval = now - *last_interval;
+    if (*this_interval > 0) {
+        *valid = 1;
     }
-    last_tach1_time = now;
-}
-
-void isr_tach2 () {
-    int now = micros();
-
-    tach2_duration = now - last_tach2_time;
-    if (tach2_duration > 0) {
-        tach2_valid = 1;
-    }
-    last_tach2_time = now;
+    *last_interval = now;
 }
 
 ISR(PCINT0_vect) {
@@ -137,11 +127,11 @@ ISR(PCINT0_vect) {
     tach2 = (PINB & bit(PIN_TACH2));
 
     if ((! tach1) && (last_tach1_state)) {
-        isr_tach1();
+        calc_interval(&tach1_duration, &last_tach1_duration, &tach1_valid);
     }
 
     if ((! tach2) && (last_tach2_state)) {
-        isr_tach2();
+        calc_interval(&tach2_duration, &last_tach2_duration, &tach2_valid);
     }
 
     last_tach1_state = tach1;
