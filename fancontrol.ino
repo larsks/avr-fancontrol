@@ -1,6 +1,5 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
-#include <SoftwareSerialTX.h>
 
 #define PIN_LED 0
 #define PIN_TACH1 1
