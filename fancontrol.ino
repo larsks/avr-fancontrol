@@ -23,7 +23,7 @@
 /** A fan will be considered "stopped" if the RPM is below this value. */
 #define MIN_RPM 10
 
-/** A temperature >= this value will trigger an over-temperature condition. */
+/** A temperature (in °C) >= this value will trigger an over-temperature condition. */
 #define MAX_TEMP 65.0
 
 /**
