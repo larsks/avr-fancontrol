@@ -1,20 +1,43 @@
-ARDUINO_QUIET = 1
-
-ARDMK_DIR = $(HOME)/src/Arduino-Makefile
 ARDUINO_DIR = $(HOME)/lib/arduino
 ARDUINO_PACKAGE_DIR = $(HOME)/.arduino15/packages
-MONITOR_PORT = /dev/ttyACM0
+ARDUINO_USER_DIR = $(HOME)/Arduino
 
-ALTERNATE_CORE_PATH = $(ARDUINO_PACKAGE_DIR)/ATTinyCore/hardware/avr/1.1.5
-ALTERNATE_CORE = ATTinyCore
-BOARD_TAG = attinyx5
-BOARD_SUB = 85
-F_CPU = 8000000L
+ARDUINO_BUILDER = $(ARDUINO_DIR)/arduino-builder
+ARDUINO_TOOLS = -tools $(ARDUINO_DIR)/hardware/tools \
+		-tools $(ARDUINO_DIR)/hardware/tools/avr \
+		-tools $(ARDUINO_DIR)/tools-builder
+
+ARDUINO_HARDWARE = -hardware $(ARDUINO_DIR)/hardware \
+		   -hardware $(ARDUINO_USER_DIR)/hardware \
+		   -hardware $(ARDUINO_PACKAGE_DIR)
+
+ARDUINO_LIBRARIES = -built-in-libraries $(ARDUINO_DIR)/libraries \
+		    -libraries $(ARDUINO_USER_DIR)/libraries
+
+ARDUINO_VERSION = 10804
+ARDUINO_WARNINGS = -warnings=default
+
+FQBN = ATTinyCore:avr:attinyx5:chip=85,clock=8internal,LTO=disable
+
+MONITOR_PORT = /dev/ttyACM0
 ISP_PORT = /dev/ttyACM0
 
-LDFLAGS = -Wl,--undefined=_mmcu,--section-start=.mmcu=0x910000
-CPPFLAGS = -I$(HOME)/src/simavr/simavr/sim/avr
+SKETCHBOOK = $(wildcard *.ino)
 
-LOCAL_OBJS = metadata.c.o
+build/%.ino.hex: $(SKETCHBOOK)
+	mkdir -p build
+	$(ARDUINO_BUILDER) \
+		$(ARDUINO_TOOLS) \
+		$(ARDUINO_HARDWARE) \
+		$(ARDUINO_LIBRARIES) \
+		$(ARDUION_WARNINGS) \
+		-ide-version=$(ARDUINO_VERSION) \
+		-verbose \
+		-build-path $(PWD)/build \
+		-fqbn=$(FQBN) \
+		$<
 
-include $(ARDMK_DIR)/Arduino.mk
+all: build/$(SKETCHBOOK).hex
+
+clean:
+	rm -rf build
